@@ -48,17 +48,19 @@ public class Well {
     }
 
     public <T extends WellObject> void addParameter(T object) {
-        WellObjectType thisType = object.getType();
-        switch (thisType) {
-            case PARAMETER:
-                this.parameters.put(object.getName(), (WellParameter) object);
-                break;
-            case LOG:
-                this.logs.put(object.getName(), (WellLog) object);
-                break;
-            case HEADER:
-                this.headers.put(object.getName(), (WellHeader) object);
-                break;
+        if (object != null) {
+            WellObjectType thisType = object.getType();
+            switch (thisType) {
+                case PARAMETER:
+                    this.parameters.put(object.getName(), (WellParameter) object);
+                    break;
+                case LOG:
+                    this.logs.put(object.getName(), (WellLog) object);
+                    break;
+                case HEADER:
+                    this.headers.put(object.getName(), (WellHeader) object);
+                    break;
+            }
         }
     }
 

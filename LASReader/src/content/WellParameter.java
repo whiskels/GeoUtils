@@ -17,7 +17,8 @@ public class WellParameter extends WellObject {
     }
 
     public void setUnit(String unit) {
-        this.unit = unit;
+        if (unit != null || unit.length() != 0)
+            this.unit = unit;
     }
 
     public String getDescription() {
@@ -25,7 +26,8 @@ public class WellParameter extends WellObject {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (description != null || description.length() != 0)
+            this.description = value;
     }
 
     public String getValue() {
@@ -33,6 +35,13 @@ public class WellParameter extends WellObject {
     }
 
     public void setValue(String value) {
-        this.value = value;
+        if (value != null || value.length() != 0)
+            this.value = value;
+    }
+
+    public void setNonEmptyFields(String unit, String value, String description) {
+        setUnit(unit);
+        setValue(value);
+        setDescription(description);
     }
 }

@@ -2,10 +2,13 @@ package main;
 
 import content.Well;
 
-import modules.process.ProcessFiles;
+import modules.process.FileProcessor;
+import modules.process.LasProcessor;
 
 
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -33,7 +36,14 @@ public class Main {
         }
         else {
             // If 1 argument
-            ProcessFiles.go(args[0]);
+            FileProcessor fileProcessor = new FileProcessor(args[0],".las");
+            List<Path> lasFiles = fileProcessor.processFiles();
+
+            for (Path path : lasFiles) {
+                LasProcessor lasProcessor = new LasProcessor(path);
+                wells.add(lasProcessor.process());
+            }
+
             for (Well well : wells) {
                 System.out.println(well.toString());
             }
