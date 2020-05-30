@@ -1,29 +1,28 @@
-package main;
+package main.java;
 
-import content.Well;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import main.java.content.Well;
 
-import modules.process.FileProcessor;
-import modules.process.LasProcessor;
+import main.java.process.FileProcessor;
+import main.java.process.LasProcessor;
 
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+
 
 
 public class Main {
+
     // Create Logger
-    static {
-        System.setProperty("java.util.logging.SimpleFormatter.format",
-                "[%1$tF %1$tT] [%4$-7s] %5$s %n");
-    }
-    public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+    public static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     // List to store wells
-    private static ArrayList<Well> wells = new ArrayList<Well>();
+    private static ArrayList<Well> wells = new ArrayList<>();
 
-    // main.Main method
+    // main.java.Main method
     public static void main(String[] args) {
         // Tests (not to run with parameters)
         args = new String[1];
@@ -31,8 +30,7 @@ public class Main {
 
         // Process args
         if (args.length != 1) {  // Give info if args.length is illegal
-            LOGGER.info("LAS Reader.\n" +
-                    "Run with one parameter - path to folder or file");
+            logger.info("LAS Reader.\nRun with one parameter - path to folder or file");
         }
         else {
             // If 1 argument
@@ -45,7 +43,7 @@ public class Main {
             }
 
             for (Well well : wells) {
-                System.out.println(well.toString());
+                logger.info(well.toString());
             }
         }
     }

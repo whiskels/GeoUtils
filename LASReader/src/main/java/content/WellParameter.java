@@ -1,4 +1,4 @@
-package content;
+package main.java.content;
 
 public class WellParameter extends WellObject {
     private String unit, value, description;
@@ -17,7 +17,7 @@ public class WellParameter extends WellObject {
     }
 
     public void setUnit(String unit) {
-        if (unit != null || unit.length() != 0)
+        if (unit != null && unit.length() != 0)
             this.unit = unit;
     }
 
@@ -26,7 +26,7 @@ public class WellParameter extends WellObject {
     }
 
     public void setDescription(String description) {
-        if (description != null || description.length() != 0)
+        if (description != null && description.length() != 0)
             this.description = value;
     }
 
@@ -35,7 +35,7 @@ public class WellParameter extends WellObject {
     }
 
     public void setValue(String value) {
-        if (value != null || value.length() != 0)
+        if (value != null && value.length() != 0)
             this.value = value;
     }
 

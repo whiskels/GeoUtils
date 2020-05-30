@@ -1,4 +1,4 @@
-package content;
+package main.java.content;
 
 public enum WellObjectType {
     HEADER {

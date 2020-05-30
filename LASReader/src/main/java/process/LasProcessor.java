@@ -1,15 +1,18 @@
-package modules.process;
+package main.java.process;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import content.*;
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
-import main.Main;
+import main.java.content.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +22,11 @@ public class LasProcessor extends Processor {
     private enum Section {V, W, C, A, P, O}
     private Section currentSection = null;
     private WellObjectType currentType = null;
+    private int currentLine = -1;
     private boolean isWrapped = false;
+
+    // Create Logger
+    public static final Logger logger = LoggerFactory.getLogger(LasProcessor.class);
 
     public LasProcessor(Path input) {
         super(input);
@@ -28,7 +35,7 @@ public class LasProcessor extends Processor {
     public Well process() {
         // Create well (file name without extension)
         Well well = new Well(this.getInput().getFileName().toString().replaceFirst("[.][^.]+$", ""));
-        Main.LOGGER.info("Processing well " + well.getName());
+        logger.info("Processing well {}", well.getName());
         readLasContent(well);
         return well;
     }
@@ -39,10 +46,13 @@ public class LasProcessor extends Processor {
 
             // Read las
             String line;
+            currentLine = 0;
             while (bf.ready()) {
                 line = bf.readLine();
+                currentLine++;
                 if (line.startsWith(BLOCK_SEPARATOR)) { // If line is another block
                     setCurrentSectionAndType(line); // Get current block's section
+                    logger.debug("\tSwitched section to: {}", this.currentSection);
                 } else if (!line.startsWith(INFO_SEPARATOR) && this.currentSection != null) { // If line is not info and currentSection is defined
                     switch (this.currentSection) {
                         case V: // VERSION - get las version and check if LAS is wrapped (Multiple lines per depth step in A section)
@@ -51,6 +61,7 @@ public class LasProcessor extends Processor {
                             String value = line.substring(pointIndex, colonIndex).replaceAll("\\s+", "");
                             if (line.startsWith("VERS")) {
                                 String lasVersion = value;
+                                logger.debug("\tLAS Version: {}", lasVersion);
                             } else if (line.startsWith("WRAP") && value.equals("YES")) {
                                 this.isWrapped = true;
                             }
@@ -63,7 +74,24 @@ public class LasProcessor extends Processor {
                             }
                             break;
                         case A:
-                            // TODO parse this section
+                            List<String> values = new ArrayList<>();
+                            while (values.size() != well.getLogs().size()) {
+                                try {
+                                    if (Character.isWhitespace(line.charAt(0))) {
+                                        line = line.replaceFirst("\\s+", "");
+                                    }
+                                    line = line.replaceAll("\\s+", " ");
+                                    values.addAll(Arrays.asList(line.split(" ")));
+                                    if (values.size() != well.getLogs().size()) {
+                                        line = bf.readLine();
+                                        currentLine++;
+                                    }
+                                } catch (Exception e) {
+                                    logger.error("\t{} while trying to parse line {}\n\tline is: {}\n\t{}", e, currentLine, line, e.getMessage());
+                                    break;
+                                }
+                            }
+                            well.addLogValues(values);
                             break;
                         case O:
                             break;
@@ -71,8 +99,9 @@ public class LasProcessor extends Processor {
                 }
             }
         } catch (IOException e) {
-            Main.LOGGER.severe(e + " " + e.getMessage());
+            logger.error("\t{} {}",e,e.getMessage());
         }
+        logger.debug(well.toString());
     }
 
     private void setCurrentSectionAndType(String line) {
@@ -92,6 +121,10 @@ public class LasProcessor extends Processor {
             case 'P' :
                 this.currentSection = Section.P;
                 this.currentType = WellObjectType.PARAMETER;
+                break;
+            case 'O' :
+                this.currentSection = Section.O;
+                this.currentType = null;
                 break;
             case 'A' :
                 this.currentSection = Section.A;

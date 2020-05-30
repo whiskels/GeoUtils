@@ -1,4 +1,4 @@
-package content;
+package main.java.content;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,7 @@ public class WellLog extends WellParameter {
 
     public WellLog(String name) {
         super(name);
-        this.values = new ArrayList<Double>();
+        this.values = new ArrayList<>();
     }
 
     @Override

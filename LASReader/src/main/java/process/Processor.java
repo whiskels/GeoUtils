@@ -1,4 +1,4 @@
-package modules.process;
+package main.java.process;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -21,8 +21,6 @@ public abstract class Processor {
     }
 
     public boolean isEmpty(String line) {
-        if (line == null || line.length() == 0) {
-            return true;
-        } return false;
+        return line == null || line.length() == 0;
     }
 }
