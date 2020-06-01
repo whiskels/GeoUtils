@@ -27,7 +27,7 @@ public class WellParameter extends WellObject {
 
     public void setDescription(String description) {
         if (description != null && description.length() != 0)
-            this.description = value;
+            this.description = description;
     }
 
     public String getValue() {

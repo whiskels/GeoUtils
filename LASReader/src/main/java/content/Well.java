@@ -27,14 +27,16 @@ public class Well extends WellObject {
         return headers;
     }
 
-    public HashMap<String, WellParameter> getParameters() {return parameters;}
+    public HashMap<String, WellParameter> getParameters() {
+        return parameters;
+    }
 
     public void addLog(WellLog log) {
-        this.logs.put(log.getName(),log);
+        logs.put(log.getName(), log);
     }
 
     public void addHeader(WellHeader header) {
-        this.headers.put(header.getName(),header);
+        headers.put(header.getName(), header);
     }
 
     public int getLogsSize() {
@@ -51,23 +53,23 @@ public class Well extends WellObject {
             WellObjectType thisType = object.getType();
             switch (thisType) {
                 case PARAMETER:
-                    this.parameters.put(object.getName(), (WellParameter) object);
+                    parameters.put(object.getName(), (WellParameter) object);
                     break;
                 case LOG:
-                    this.logs.put(object.getName(), (WellLog) object);
+                    logs.put(object.getName(), (WellLog) object);
                     break;
                 case HEADER:
-                    this.headers.put(object.getName(), (WellHeader) object);
+                    headers.put(object.getName(), (WellHeader) object);
                     break;
             }
         }
     }
 
     public void addLogValues(List<String> values) {
-        if (values.size() == this.logs.size()) {
+        if (values.size() == logs.size()) {
             int i = 0;
-            for (Map.Entry<String, WellLog> entry : this.logs.entrySet()) {
-                entry.getValue().addValue(Double.parseDouble(values.get(i)));
+            for (Map.Entry<String, WellLog> entry : logs.entrySet()) {
+                entry.getValue().addValue(values.get(0),values.get(i));
                 i++;
             }
         }
@@ -75,10 +77,10 @@ public class Well extends WellObject {
 
     public String toString() {
         return String.format("Well name: %s\n\t" +
-                "Headers: %s\n\t" +
-                "Logs: %s\n\t" +
-                "Total log lines count: %d\n\t" +
-                "Parameters: %s",
-                this.getName(), this.headers.keySet().toString(), this.logs.keySet().toString(), this.getLogsSize(), this.getParameters().size());
+                        "Headers: %s\n\t" +
+                        "Logs: %s\n\t" +
+                        "Total log lines count: %d\n\t" +
+                        "Parameters: %s",
+                getName(), headers.keySet().toString(), logs.keySet().toString(), getLogsSize(), parameters.keySet().toString());
     }
 }

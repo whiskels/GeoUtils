@@ -13,23 +13,22 @@ import java.util.stream.Collectors;
 
 
 public class FileProcessor extends Processor {
-    private final String fileExtension;
-    private boolean isValid, isFolder;
-
     // Create Logger
     public static final Logger logger = LoggerFactory.getLogger(FileProcessor.class);
+    private final String fileExtension;
+    private boolean isValid, isFolder;
 
     public FileProcessor(String line, String fileExtension) {
         super(new File(line).toPath());
         this.fileExtension = fileExtension;
-        logger.debug("Created fileProcessor\n\tInput string: {}\n\tExtension: {}",line,fileExtension);
+        logger.debug("Created fileProcessor\n\tInput string: {}\n\tExtension: {}", line, fileExtension);
         checkDataType();
     }
 
     private void checkDataType() {
         this.isValid = checkIfValid();
         this.isFolder = checkIfFolder();
-        logger.debug("Checking input:\n\t- is valid? {}\n\t- is folder? {}",this.isValid,this.isFolder);
+        logger.debug("Checking input:\n\t- is valid? {}\n\t- is folder? {}", this.isValid, this.isFolder);
     }
 
     private boolean checkIfValid() {
@@ -65,7 +64,7 @@ public class FileProcessor extends Processor {
                         .filter(s -> containsIgnoreCase(s.toString(), fileExtension))
                         .map(Path::toAbsolutePath).sorted().collect(Collectors.toList());
             } catch (IOException e) {
-                logger.error("\t{} {}",e,e.getMessage());
+                logger.error("\t{} {}", e, e.getMessage());
             }
         }
         if (foundFiles != null) {

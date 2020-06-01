@@ -1,14 +1,19 @@
 package main.java.content;
 
-import java.util.ArrayList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.LinkedHashMap;
 
 
 public class WellLog extends WellParameter {
-    private ArrayList<Double> values;
+    public static final Logger logger = LoggerFactory.getLogger(WellLog.class);
+    private LinkedHashMap<Double, Double> values;
 
     public WellLog(String name) {
         super(name);
-        this.values = new ArrayList<>();
+
     }
 
     @Override
@@ -16,15 +21,24 @@ public class WellLog extends WellParameter {
         return WellObjectType.LOG;
     }
 
-    public void setValues(ArrayList<Double> values) {
-        this.values = values;
-    }
-
-    public ArrayList<Double> getValues() {
+    public LinkedHashMap<Double,?> getValues() {
         return values;
     }
 
-    public void addValue(double value) {
-        this.values.add(value);
+    public void addValue(String depth, String value) {
+        if (this.values == null) {
+            initializeMap(value);
+        }
+
+        values.put(Double.parseDouble(depth),Double.parseDouble(value));
+    }
+
+    public void initializeMap(String value) {
+        try {
+            double a = Double.parseDouble(value);
+            this.values = new LinkedHashMap<Double,Double>();
+        } catch (NumberFormatException e) {
+            logger.error("Caught {} while trying to initialize log values for log {}", e, getName());
+        }
     }
 }

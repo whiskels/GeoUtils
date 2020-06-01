@@ -1,12 +1,13 @@
 package main.java.process;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
-import main.java.content.*;
+import main.java.content.Well;
+import main.java.content.WellObjectType;
+import main.java.content.WellParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,15 +19,14 @@ import java.util.regex.Pattern;
 
 
 public class LasProcessor extends Processor {
+    // Create Logger
+    public static final Logger logger = LoggerFactory.getLogger(LasProcessor.class);
     private final String BLOCK_SEPARATOR = "~", INFO_SEPARATOR = "#";
-    private enum Section {V, W, C, A, P, O}
     private Section currentSection = null;
     private WellObjectType currentType = null;
     private int currentLine = -1;
     private boolean isWrapped = false;
-
-    // Create Logger
-    public static final Logger logger = LoggerFactory.getLogger(LasProcessor.class);
+    private enum Section {V, W, C, A, P, O}
 
     public LasProcessor(Path input) {
         super(input);
@@ -99,34 +99,34 @@ public class LasProcessor extends Processor {
                 }
             }
         } catch (IOException e) {
-            logger.error("\t{} {}",e,e.getMessage());
+            logger.error("\t{} {}", e, e.getMessage());
         }
         logger.debug(well.toString());
     }
 
     private void setCurrentSectionAndType(String line) {
         switch (line.charAt(1)) {
-            case 'V' :
+            case 'V':
                 this.currentSection = Section.V;
                 this.currentType = null;
                 break;
-            case 'W' :
+            case 'W':
                 this.currentSection = Section.W;
                 this.currentType = WellObjectType.HEADER;
                 break;
-            case 'C' :
+            case 'C':
                 this.currentSection = Section.C;
                 this.currentType = WellObjectType.LOG;
                 break;
-            case 'P' :
+            case 'P':
                 this.currentSection = Section.P;
                 this.currentType = WellObjectType.PARAMETER;
                 break;
-            case 'O' :
+            case 'O':
                 this.currentSection = Section.O;
                 this.currentType = null;
                 break;
-            case 'A' :
+            case 'A':
                 this.currentSection = Section.A;
                 this.currentType = null;
                 break;
@@ -140,15 +140,15 @@ public class LasProcessor extends Processor {
         Pattern pattern = Pattern.compile("\\.?([^.]*)\\.([^\\s]*)(.*):(.*)");
         Matcher matcher = pattern.matcher(line);
         if (matcher.matches()) {
-             name = matcher.group(1).replaceAll(" ", "");
-             unit = matcher.group(2).replaceAll(" ", "");
-             value = matcher.group(3).replaceAll(" " ,"");
-             desc = matcher.group(4);
+            name = matcher.group(1).replaceAll(" ", "");
+            unit = matcher.group(2).replaceAll(" ", "");
+            value = matcher.group(3).replaceAll(" ", "");
+            desc = matcher.group(4);
         }
 
         if (!isEmpty(name)) {
             parameter = this.currentType.getInstance(name);
-            parameter.setNonEmptyFields(unit,value,desc);
+            parameter.setNonEmptyFields(unit, value, desc);
         }
 
         return parameter;
