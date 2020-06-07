@@ -17,21 +17,28 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/** Las Processor class
+ * Used to parse .las files and create Well objects
+ */
 
 public class LasProcessor extends Processor {
-    // Create Logger
     public static final Logger logger = LoggerFactory.getLogger(LasProcessor.class);
-    private final String BLOCK_SEPARATOR = "~", INFO_SEPARATOR = "#";
-    private Section currentSection = null;
-    private WellObjectType currentType = null;
-    private int currentLine = -1;
-    private boolean isWrapped = false;
-    private enum Section {V, W, C, A, P, O}
+    private final String BLOCK_SEPARATOR = "~", INFO_SEPARATOR = "#"; // Separators are constant
+    private Section currentSection = null; // Current section of .las file
+    private WellObjectType currentType = null; // Current type of created parameter
+    private int currentLine = -1; // Current file line
+    private boolean isWrapped = false; // Is log curve values section wrapped
+    private enum Section {V, W, C, A, P, O} // .las file sections as enum
 
     public LasProcessor(Path input) {
         super(input);
     }
 
+    /**
+     * Main method - processes .las file
+     *
+     * @return well object
+     */
     public Well process() {
         // Create well (file name without extension)
         Well well = new Well(this.getInput().getFileName().toString().replaceFirst("[.][^.]+$", ""));
@@ -40,13 +47,16 @@ public class LasProcessor extends Processor {
         return well;
     }
 
+    /**
+     * Reads file content and fills fields in created well
+     * @param well Well instance created in process() method is given as input
+     */
     private void readLasContent(Well well) {
-        // Create BufferedReader to read file line by line
+        // Try-with-resources initialization of buffered reader
         try (BufferedReader bf = Files.newBufferedReader(this.getInput(), StandardCharsets.UTF_8)) {
-
-            // Read las
             String line;
             currentLine = 0;
+
             while (bf.ready()) {
                 line = bf.readLine();
                 currentLine++;
@@ -75,7 +85,7 @@ public class LasProcessor extends Processor {
                             break;
                         case A:
                             List<String> values = new ArrayList<>();
-                            while (values.size() != well.getLogs().size()) {
+                            while (values.size() != well.getLogs().size()) { // Accumulate data until values size equals log curves size
                                 try {
                                     if (Character.isWhitespace(line.charAt(0))) {
                                         line = line.replaceFirst("\\s+", "");
@@ -104,41 +114,43 @@ public class LasProcessor extends Processor {
         logger.debug(well.toString());
     }
 
+    /** Sets current section and type from line that starts with BLOCK_SEPARATOR */
     private void setCurrentSectionAndType(String line) {
         switch (line.charAt(1)) {
             case 'V':
-                this.currentSection = Section.V;
-                this.currentType = null;
+                currentSection = Section.V;
+                currentType = null;
                 break;
             case 'W':
-                this.currentSection = Section.W;
-                this.currentType = WellObjectType.HEADER;
+                currentSection = Section.W;
+                currentType = WellObjectType.HEADER;
                 break;
             case 'C':
-                this.currentSection = Section.C;
-                this.currentType = WellObjectType.LOG;
+                currentSection = Section.C;
+                currentType = WellObjectType.LOG;
                 break;
             case 'P':
-                this.currentSection = Section.P;
-                this.currentType = WellObjectType.PARAMETER;
+                currentSection = Section.P;
+                currentType = WellObjectType.PARAMETER;
                 break;
             case 'O':
-                this.currentSection = Section.O;
-                this.currentType = null;
+                currentSection = Section.O;
+                currentType = null;
                 break;
             case 'A':
-                this.currentSection = Section.A;
-                this.currentType = null;
+                currentSection = Section.A;
+                currentType = null;
                 break;
         }
     }
 
+    /** General method to get Well parameters from line*/
     private WellParameter getWellParameter(String line) {
         String name = null, unit = null, value = null, desc = null;
         WellParameter parameter = null;
-
         Pattern pattern = Pattern.compile("\\.?([^.]*)\\.([^\\s]*)(.*):(.*)");
         Matcher matcher = pattern.matcher(line);
+
         if (matcher.matches()) {
             name = matcher.group(1).replaceAll(" ", "");
             unit = matcher.group(2).replaceAll(" ", "");

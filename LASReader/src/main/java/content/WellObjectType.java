@@ -1,5 +1,10 @@
 package main.java.content;
 
+/**
+ * Well Object Type ENUM
+ * Used to create corresponding well parameters
+ */
+
 public enum WellObjectType {
     HEADER {
         @Override

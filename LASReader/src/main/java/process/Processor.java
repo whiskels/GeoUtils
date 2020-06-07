@@ -14,6 +14,7 @@ public abstract class Processor {
         return input;
     }
 
+    /** Checks if input list is empty and if true - returns null */
     public <T> List<T> isEmpty(List<T> list) {
         if (list == null || list.size() == 0) {
             return null;

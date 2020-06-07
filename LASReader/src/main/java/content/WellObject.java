@@ -1,5 +1,9 @@
 package main.java.content;
 
+/**
+ * Basic class for Well objects
+ */
+
 public abstract class WellObject {
     private final String name;
 

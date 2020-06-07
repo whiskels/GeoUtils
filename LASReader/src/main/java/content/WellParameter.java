@@ -1,5 +1,10 @@
 package main.java.content;
 
+/**
+ * Well parameters are parsed from the corresponding LAS section
+ * Is parent for WellHeader class
+ */
+
 public class WellParameter extends WellObject {
     private String unit, value, description;
 
@@ -12,8 +17,11 @@ public class WellParameter extends WellObject {
         return WellObjectType.PARAMETER;
     }
 
-    public String getUnit() {
-        return unit;
+    /** Sets all well parameter fiels */
+    public void setNonEmptyFields(String unit, String value, String description) {
+        setUnit(unit);
+        setValue(value);
+        setDescription(description);
     }
 
     public void setUnit(String unit) {
@@ -21,17 +29,9 @@ public class WellParameter extends WellObject {
             this.unit = unit;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         if (description != null && description.length() != 0)
             this.description = description;
-    }
-
-    public String getValue() {
-        return value;
     }
 
     public void setValue(String value) {
@@ -39,9 +39,15 @@ public class WellParameter extends WellObject {
             this.value = value;
     }
 
-    public void setNonEmptyFields(String unit, String value, String description) {
-        setUnit(unit);
-        setValue(value);
-        setDescription(description);
+    public String getUnit() {
+        return unit;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getValue() {
+        return value;
     }
 }
