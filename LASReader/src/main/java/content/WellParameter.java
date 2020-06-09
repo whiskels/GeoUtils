@@ -17,24 +17,24 @@ public class WellParameter extends WellObject {
         return WellObjectType.PARAMETER;
     }
 
-    /** Sets all well parameter fiels */
-    public void setNonEmptyFields(String unit, String value, String description) {
+    /** Sets all well parameter fields */
+    public final void setNonEmptyFields(String unit, String value, String description) {
         setUnit(unit);
         setValue(value);
         setDescription(description);
     }
 
-    public void setUnit(String unit) {
+    public final void setUnit(String unit) {
         if (unit != null && unit.length() != 0)
             this.unit = unit;
     }
 
-    public void setDescription(String description) {
+    public final void setDescription(String description) {
         if (description != null && description.length() != 0)
             this.description = description;
     }
 
-    public void setValue(String value) {
+    public final void setValue(String value) {
         if (value != null && value.length() != 0)
             this.value = value;
     }

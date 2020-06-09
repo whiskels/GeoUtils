@@ -10,7 +10,7 @@ import java.util.Map;
  * Stores well name and well parameters in maps
  */
 
-public class Well extends WellObject {
+public final class Well extends WellObject {
     private HashMap<String, WellHeader> headers;
     private LinkedHashMap<String, WellLog> logs;
     private HashMap<String, WellParameter> parameters;

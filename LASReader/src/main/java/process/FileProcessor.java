@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
  */
 
 public class FileProcessor extends Processor {
-    public static final Logger logger = LoggerFactory.getLogger(FileProcessor.class);
     private boolean isValid, isFolder;
 
     public FileProcessor(String line) {
@@ -46,9 +45,9 @@ public class FileProcessor extends Processor {
     }
 
     /**
-     * Finds all matching files
+     * Finds all matching files for an extension
      *
-     * @return
+     * @return List of files that match given extension
      */
     public List<Path> processFiles(String fileExtension) {
         List<Path> files = new ArrayList<>();

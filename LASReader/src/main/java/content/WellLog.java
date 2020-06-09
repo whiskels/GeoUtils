@@ -10,8 +10,7 @@ import java.util.LinkedHashMap;
  * Stores log curve values in "depth - values" linked hash map
  */
 
-
-public class WellLog extends WellParameter {
+public final class WellLog extends WellParameter {
     public static final Logger logger = LoggerFactory.getLogger(WellLog.class);
     private LinkedHashMap<Double, Double> values;
 
@@ -29,7 +28,7 @@ public class WellLog extends WellParameter {
      * In case there are no values in las map is not initialized in constructor
      */
     public void initializeMap() {
-        this.values = new LinkedHashMap<Double,Double>();
+        this.values = new LinkedHashMap<>();
     }
 
     /**

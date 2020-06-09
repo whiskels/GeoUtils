@@ -11,7 +11,7 @@ public abstract class WellObject {
         this.name = name;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 

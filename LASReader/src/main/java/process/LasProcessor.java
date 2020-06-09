@@ -21,13 +21,12 @@ import java.util.regex.Pattern;
  * Used to parse .las files and create Well objects
  */
 
-public class LasProcessor extends Processor {
-    public static final Logger logger = LoggerFactory.getLogger(LasProcessor.class);
+public final class LasProcessor extends Processor {
     private final String BLOCK_SEPARATOR = "~", INFO_SEPARATOR = "#"; // Separators are constant
     private Section currentSection = null; // Current section of .las file
     private WellObjectType currentType = null; // Current type of created parameter
     private int currentLine = -1; // Current file line
-    private boolean isWrapped = false; // Is log curve values section wrapped
+    private boolean isWrapped = false; // Is values section wrapped
     private enum Section {V, W, C, A, P, O} // .las file sections as enum
 
     public LasProcessor(Path input) {
