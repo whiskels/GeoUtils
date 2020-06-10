@@ -1,7 +1,4 @@
-package main.java.process;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package main.java.modules;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,33 +9,32 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * File Processor class
+ * File Finder class
  * Finds files with designated extension
  */
 
-public class FileProcessor extends Processor {
+public class FileFinder extends FileHandler {
     private boolean isValid, isFolder;
 
-    public FileProcessor(String line) {
+    public FileFinder(String line) {
         super(new File(line).toPath());
         logger.debug("Created fileProcessor\n\tInput string: {}", line);
-        checkDataType();
     }
 
     /** Check if parameters given in constructor are valid */
     private void checkDataType() {
-        isValid = checkIfValid();
-        isFolder = checkIfFolder();
+        isValid = isValid();
+        isFolder = isFolder();
         logger.debug("Checking input:\n\t- is valid? {}\n\t- is folder? {}", this.isValid, this.isFolder);
     }
 
     /** Check if input exists */
-    private boolean checkIfValid() {
+    private boolean isValid() {
         return this.getInput() != null && Files.exists(this.getInput());
     }
 
     /** Check if input is folder */
-    private boolean checkIfFolder() {
+    private boolean isFolder() {
         if (isValid) {
             return Files.isDirectory(this.getInput());
         } else return false;
@@ -46,25 +42,24 @@ public class FileProcessor extends Processor {
 
     /**
      * Finds all matching files for an extension
-     *
-     * @return List of files that match given extension
      */
-    public List<Path> processFiles(String fileExtension) {
-        List<Path> files = new ArrayList<>();
+    public List<Path> findFiles(String fileExtension) {
+        checkDataType();
+        List<Path> foundFiles = new ArrayList<>();
         if (isValid) {
             if (isFolder) {
-                files = findFiles(fileExtension); // If input is folder - find all files with fileExtension
+                foundFiles = findFilesInDirectory(fileExtension); // If input is folder - find all files with fileExtension
             } else {
                 if (containsIgnoreCase(this.getInput().toString(), fileExtension)) {
-                    files.add(this.getInput()); // If input is a single file - add it to the list of found files
+                    foundFiles.add(this.getInput()); // If input is a single file - add it to the list of found files
                 }
             }
         }
-        return isEmpty(files);
+        return isEmpty(foundFiles);
     }
 
     /** Finds all files in the directory with given file extension */
-    private List<Path> findFiles(String fileExtension) {
+    private List<Path> findFilesInDirectory(String fileExtension) {
         logger.debug("Searching for files with {}", fileExtension);
         List<Path> foundFiles = null;
         if (isFolder) {

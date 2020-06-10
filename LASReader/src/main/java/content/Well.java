@@ -2,7 +2,6 @@ package main.java.content;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,43 +21,6 @@ public final class Well extends WellObject {
         this.parameters = new HashMap<>();
     }
 
-    /**
-     * Adds well parameter
-     *
-     * @param object well parameter
-     * @param <T> generic type - object must extend WellObject class
-     */
-    public <T extends WellObject> void addParameter(T object) {
-        if (object != null) {
-            WellObjectType thisType = object.getType();
-            switch (thisType) {
-                case PARAMETER:
-                    parameters.put(object.getName(), (WellParameter) object);
-                    break;
-                case LOG:
-                    logs.put(object.getName(), (WellLog) object);
-                    break;
-                case HEADER:
-                    headers.put(object.getName(), (WellHeader) object);
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Adds log values
-     *
-     * @param values List of log values. Size of list must be equal to the size of map
-     * */
-    public void addLogValues(List<String> values) {
-        if (values.size() == logs.size()) {
-            int i = 0;
-            for (Map.Entry<String, WellLog> entry : logs.entrySet()) {
-                entry.getValue().addValue(values.get(0),values.get(i));
-                i++;
-            }
-        }
-    }
 
     public int getLogsSize() {
         if (this.logs.size() != 0) {
@@ -90,11 +52,15 @@ public final class Well extends WellObject {
         return parameters;
     }
 
-    public void addLog(WellLog log) {
-        logs.put(log.getName(), log);
+    public void addHeaders(HashMap<String, WellHeader> headers) {
+        this.headers.putAll(headers);
     }
 
-    public void addHeader(WellHeader header) {
-        headers.put(header.getName(), header);
+    public void addParameters(HashMap<String, WellParameter> parameters) {
+        this.parameters.putAll(parameters);
+    }
+
+    public void addLogs(LinkedHashMap<String, WellLog> logs) {
+        this.logs.putAll(logs);
     }
 }

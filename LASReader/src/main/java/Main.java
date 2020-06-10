@@ -1,12 +1,16 @@
 package main.java;
 
+import main.java.content.builder.WellBuilder;
+import main.java.content.builder.WellBuilderDirector;
+import main.java.content.builder.WellBuilderFromLas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import main.java.content.Well;
 
-import main.java.process.FileProcessor;
-import main.java.process.LasProcessor;
+import main.java.modules.FileFinder;
+import main.java.modules.LasReader;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +21,7 @@ import java.util.List;
  * Parses found files
  * Creates well objects with the results of parsing
  *
- * @input path to file or directory
+ * @args path to file or directory
  *
  * @author whiskels
  */
@@ -37,10 +41,15 @@ public class Main {
         if (args.length != 1) {  // Sout info if args.length is illegal
             logger.info("LAS Reader.\nRun with one parameter - path to folder or file");
         } else { // If 1 argument
-            FileProcessor fileProcessor = new FileProcessor(args[0]); // Create instance file processor
-            List<Path> lasFiles = fileProcessor.processFiles(".las"); // Find all las files
+            FileFinder fileFinder = new FileFinder(args[0]); // Create instance file processor
+            List<Path> lasFiles = fileFinder.findFiles(".las"); // Find all las files
 
-            lasFiles.forEach(file -> wells.add(new LasProcessor(file).process())); // For each found file: parse LAS, create well and add it to the list
+            WellBuilderDirector wbd = new WellBuilderDirector();
+            lasFiles.forEach(file -> {
+                    WellBuilder builder = new WellBuilderFromLas(file);
+                    wbd.createWell(builder);
+                    wells.add(builder.getResult());
+            });
         }
         wells.forEach(well -> logger.info(well.toString())); // Log results
     }
