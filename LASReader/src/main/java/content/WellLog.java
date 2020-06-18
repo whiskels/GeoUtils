@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
  */
 
 public final class WellLog extends WellParameter {
-    public static final Logger logger = LoggerFactory.getLogger(WellLog.class);
+    private static final Logger logger = LoggerFactory.getLogger(WellLog.class);
     private LinkedHashMap<Double, Double> values;
 
     public WellLog(String name) {
@@ -24,21 +24,13 @@ public final class WellLog extends WellParameter {
     }
 
     /**
-     * Initializes map to store values.
-     * In case there are no values in las map is not initialized in constructor
-     */
-    public void initializeMap() {
-        this.values = new LinkedHashMap<>();
-    }
-
-    /**
      * Adds log values to map
      *
      * @param depth value of depth log
      * @param value value of curve
      */
     public void addValue(String depth, String value) {
-        if (this.values == null) {
+        if (values == null) {
             initializeMap();
         }
         try {
@@ -46,6 +38,14 @@ public final class WellLog extends WellParameter {
         } catch (NumberFormatException e) {
             logger.error("Caught {} while trying to add log values for log {}", e, getName());
         }
+    }
+
+    /**
+     * Initializes map to store values.
+     * In case there are no values in las map is not initialized in constructor
+     */
+    private void initializeMap() {
+        this.values = new LinkedHashMap<>();
     }
 
     public LinkedHashMap<Double,?> getValues() {

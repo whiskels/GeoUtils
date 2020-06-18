@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public class WellBuilderFromLas implements WellBuilder {
-    public static final Logger logger = LoggerFactory.getLogger(WellBuilderFromLas.class); // Create instance of logger
+    private static final Logger logger = LoggerFactory.getLogger(WellBuilderFromLas.class); // Create instance of logger
+    private final Path input;
     private Well well;
-    private Path input;
     private LasReader reader;
     private LasDataParser parser;
 

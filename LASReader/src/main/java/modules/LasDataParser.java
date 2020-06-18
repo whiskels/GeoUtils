@@ -1,6 +1,5 @@
 package main.java.modules;
 
-
 import main.java.content.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,17 +10,17 @@ import java.util.regex.Pattern;
 
 public final class LasDataParser {
     private static final Logger logger = LoggerFactory.getLogger(LasDataParser.class); // Create instance of logger
-    private LasReader reader;
     private final String BLOCK_SEPARATOR = "~", INFO_SEPARATOR = "#"; // Separators are constant
-    private Section currentSection = null; // Current section of .las file
-    private WellObjectType currentType = null; // Current type of created parameter
-    private int currentLine = 0; // Current file line
-    private boolean isWrapped = false; // Is values section wrapped
-    private enum Section {V, W, C, A, P, O} // .las file sections as enum
+    private final HashMap<String, WellHeader> headers = new HashMap<>();
+    private final LinkedHashMap<String, WellLog> logs = new LinkedHashMap<>();
+    private final HashMap<String, WellParameter> parameters = new HashMap<>();
+    private LasReader reader;
+    private Section currentSection; // Current section of .las file
+    private WellObjectType currentType; // Current type of created parameter
+    private int currentLine; // Current file line
     private String lasVersion;
-    private HashMap<String, WellHeader> headers = new HashMap<>();
-    private LinkedHashMap<String, WellLog> logs = new LinkedHashMap<>();
-    private HashMap<String, WellParameter> parameters = new HashMap<>();
+    private boolean isWrapped; // Is values section wrapped
+    private enum Section {V, W, C, A, P, O} // .las file sections as enum
 
     public LasDataParser(LasReader reader) {
         this.reader = reader;
@@ -32,17 +31,21 @@ public final class LasDataParser {
      *
      * @param line from LasReader
      */
-    public void parseLine(String line) {
+    public final void parseLine(String line) {
         currentLine++;
+
         if (line.startsWith(BLOCK_SEPARATOR)) { // If line is another block
             setCurrentSectionAndType(line); // Get current block's section
+
             logger.debug("\tSwitched section to: {}", currentSection);
-        } else if (!line.startsWith(INFO_SEPARATOR) && currentSection != null) { // If line is not info and currentSection is defined
+        } else if (!line.startsWith(INFO_SEPARATOR) && currentSection != null) {
             switch (currentSection) {
-                case V: // VERSION - get las version and check if LAS is wrapped (Multiple lines per depth step in A section)
-                    int pointIndex = line.indexOf(".");
-                    int colonIndex = line.indexOf(":");
-                    String value = line.substring(pointIndex, colonIndex).replaceAll("\\s+", "");
+                case V: // VERSION - get las version and check if LAS is wrapped
+                    final int pointIndex = line.indexOf(".");
+                    final int colonIndex = line.indexOf(":");
+                    final String value = line.substring(pointIndex, colonIndex)
+                                             .replaceAll("\\s+", "");
+
                     if (line.startsWith("VERS")) {
                         lasVersion = value;
                         logger.debug("\tLAS Version: {}", lasVersion);
@@ -50,31 +53,36 @@ public final class LasDataParser {
                         isWrapped = true;
                     }
                     break;
-                case W: // WELL - merged with P
-                case C: // CURVE - merged with P
+                case W: // WELL - drop through
+                case C: // CURVE - drop through
                 case P:
                     if (currentType != null) {
                         createParameter(line);
                     }
                     break;
                 case A:
-                    List<String> values = new ArrayList<>();
+                    final List<String> values = new ArrayList<>();
+
                     while (values.size() != logs.size()) { // Accumulate data until values size equals log curves size
                         try {
                             if (Character.isWhitespace(line.charAt(0))) {
                                 line = line.replaceFirst("\\s+", "");
                             }
+
                             line = line.replaceAll("\\s+", " ");
                             values.addAll(Arrays.asList(line.split(" ")));
+
                             if (values.size() != logs.size()) {
                                 line = reader.readLine();
                                 currentLine++;
                             }
                         } catch (Exception e) {
-                            logger.error("\t{} while trying to parse line {}\n\tline is: {}\n\t{}", e, currentLine, line, e.getMessage());
+                            logger.error("\t{} while trying to parse line {}\n\tline is: {}\n\t{}",
+                                          e, currentLine, line, e.getMessage());
                             break;
                         }
                     }
+
                     addLogValues(values);
                     break;
                 case O:
@@ -86,7 +94,7 @@ public final class LasDataParser {
     /**
      * Sets current section and type from line that starts with BLOCK_SEPARATOR
      */
-    private void setCurrentSectionAndType(String line) {
+    private final void setCurrentSectionAndType(String line) {
         switch (line.charAt(1)) {
             case 'V':
                 currentSection = Section.V;
@@ -118,11 +126,11 @@ public final class LasDataParser {
     /**
      * General method to add Well parameters from line
      */
-    private void createParameter(String line) {
+    private final void createParameter(String line) {
         String name = null, unit = null, value = null, desc = null;
         WellParameter parameter = null;
-        Pattern pattern = Pattern.compile("\\.?([^.]*)\\.([^\\s]*)(.*):(.*)");
-        Matcher matcher = pattern.matcher(line);
+        final Pattern pattern = Pattern.compile("\\.?([^.]*)\\.([^\\s]*)(.*):(.*)");
+        final Matcher matcher = pattern.matcher(line);
 
         if (matcher.matches()) {
             name = matcher.group(1).replaceAll(" ", "");
@@ -144,7 +152,7 @@ public final class LasDataParser {
      *
      * @param values List of log values. Size of list must be equal to the size of map
      * */
-    public void addLogValues(List<String> values) {
+    public final void addLogValues(List<String> values) {
         if (values.size() == logs.size()) {
             int i = 0;
             for (Map.Entry<String, WellLog> entry : logs.entrySet()) {
@@ -160,7 +168,7 @@ public final class LasDataParser {
      * @param object well parameter
      * @param <T> generic type - object must extend WellObject class
      */
-    public <T extends WellObject> void addParameter(T object) {
+    public final <T extends WellObject> void addParameter(T object) {
         if (object != null) {
             WellObjectType thisType = object.getType();
             switch (thisType) {

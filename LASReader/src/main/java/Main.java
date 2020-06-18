@@ -32,7 +32,7 @@ public class Main {
 
     /** Main method
      * @param args path to file or directory
-     * */
+     */
     public static void main(String[] args) {
         // Tests (not to run with parameters)
         args = new String[1];
@@ -41,16 +41,18 @@ public class Main {
         if (args.length != 1) {  // Sout info if args.length is illegal
             logger.info("LAS Reader.\nRun with one parameter - path to folder or file");
         } else { // If 1 argument
-            FileFinder fileFinder = new FileFinder(args[0]); // Create instance file processor
-            List<Path> lasFiles = fileFinder.findFiles(".las"); // Find all las files
+            final FileFinder fileFinder = new FileFinder(args[0]); // Create instance file processor
+            final List<Path> lasFiles = fileFinder.findFiles(".las"); // Find all las files
 
-            WellBuilderDirector wbd = new WellBuilderDirector();
+            final WellBuilderDirector wbd = new WellBuilderDirector();
+
             lasFiles.forEach(file -> {
-                    WellBuilder builder = new WellBuilderFromLas(file);
+                    final WellBuilder builder = new WellBuilderFromLas(file);
                     wbd.createWell(builder);
                     wells.add(builder.getResult());
             });
         }
+
         wells.forEach(well -> logger.info(well.toString())); // Log results
     }
 

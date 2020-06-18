@@ -25,18 +25,21 @@ public class WellParameter extends WellObject {
     }
 
     public final void setUnit(String unit) {
-        if (unit != null && unit.length() != 0)
+        if (unit != null && unit.length() != 0) {
             this.unit = unit;
+        }
     }
 
     public final void setDescription(String description) {
-        if (description != null && description.length() != 0)
+        if (description != null && description.length() != 0) {
             this.description = description;
+        }
     }
 
     public final void setValue(String value) {
-        if (value != null && value.length() != 0)
+        if (value != null && value.length() != 0) {
             this.value = value;
+        }
     }
 
     public String getUnit() {

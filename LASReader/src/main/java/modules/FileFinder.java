@@ -30,14 +30,16 @@ public class FileFinder extends FileHandler {
 
     /** Check if input exists */
     private boolean isValid() {
-        return this.getInput() != null && Files.exists(this.getInput());
+        return input != null && Files.exists(input);
     }
 
     /** Check if input is folder */
     private boolean isFolder() {
         if (isValid) {
             return Files.isDirectory(this.getInput());
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -45,40 +47,45 @@ public class FileFinder extends FileHandler {
      */
     public List<Path> findFiles(String fileExtension) {
         checkDataType();
+
         List<Path> foundFiles = new ArrayList<>();
+
         if (isValid) {
             if (isFolder) {
                 foundFiles = findFilesInDirectory(fileExtension); // If input is folder - find all files with fileExtension
-            } else {
-                if (containsIgnoreCase(this.getInput().toString(), fileExtension)) {
-                    foundFiles.add(this.getInput()); // If input is a single file - add it to the list of found files
-                }
+            } else if (containsIgnoreCase(input.toString(), fileExtension)) {
+                foundFiles.add(input); // If input is a single file - add it to the list of found files
             }
         }
+
         return isEmpty(foundFiles);
     }
 
     /** Finds all files in the directory with given file extension */
     private List<Path> findFilesInDirectory(String fileExtension) {
         logger.debug("Searching for files with {}", fileExtension);
+
         List<Path> foundFiles = null;
+
         if (isFolder) {
             try {
                 // Recursively find all files with given extension
-                foundFiles = Files.walk(this.getInput())
-                        .filter(s -> containsIgnoreCase(s.toString(), fileExtension))
-                        .map(Path::toAbsolutePath)
-                        .sorted()
-                        .collect(Collectors.toList());
+                foundFiles = Files.walk(input)
+                                  .filter(s -> containsIgnoreCase(s.toString(), fileExtension))
+                                  .map(Path::toAbsolutePath)
+                                  .sorted()
+                                  .collect(Collectors.toList());
             } catch (IOException e) {
                 logger.error("\t{} {}", e, e.getMessage());
             }
         }
+
         if (foundFiles != null) {
             logger.debug("\tFound {} files.", foundFiles.size());
         } else {
             logger.error("\tError. No files found.");
         }
+
         return isEmpty(foundFiles);
     }
 
@@ -89,13 +96,16 @@ public class FileFinder extends FileHandler {
      * @return boolean contains ? true : false
      */
     private boolean containsIgnoreCase(String inputString, String containsString) {
-        // If containsString.length is 0 - always true;
         final int length = containsString.length();
-        if (length == 0)
+
+        if (length == 0) {        // If containsString.length is 0 - always true;
             return true;
+        }
+
         for (int i = inputString.length() - length; i >= 0; i--) {
-            if (inputString.regionMatches(true, i, containsString, 0, length))
+            if (inputString.regionMatches(true, i, containsString, 0, length)) {
                 return true;
+            }
         }
         return false;
     }

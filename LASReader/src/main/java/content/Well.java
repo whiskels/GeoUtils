@@ -23,9 +23,12 @@ public final class Well extends WellObject {
 
 
     public int getLogsSize() {
-        if (this.logs.size() != 0) {
+        if (logs.size() != 0) {
             Map.Entry<String, WellLog> entry = logs.entrySet().iterator().next();
-            return entry.getValue().getValues().size();
+
+            return entry.getValue()
+                        .getValues()
+                        .size();
         } else {
             return 0;
         }
@@ -33,11 +36,11 @@ public final class Well extends WellObject {
 
     public String toString() {
         return String.format("Well name: %s\n\t" +
-                        "Headers: %s\n\t" +
-                        "Logs: %s\n\t" +
-                        "Total log lines count: %d\n\t" +
-                        "Parameters: %s",
-                getName(), headers.keySet().toString(), logs.keySet().toString(), getLogsSize(), parameters.keySet().toString());
+                             "Headers: %s\n\t" +
+                             "Logs: %s\n\t" +
+                             "Total log lines count: %d\n\t" +
+                             "Parameters: %s",
+                getName(), headers.keySet(), logs.keySet(), getLogsSize(), parameters.keySet()  );
     }
 
     public HashMap<String, WellLog> getLogs() {

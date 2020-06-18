@@ -12,12 +12,14 @@ public enum WellObjectType {
             return new WellHeader(name);
         }
     },
+
     LOG {
         @Override
         public WellParameter getInstance(String name) {
             return new WellLog(name);
         }
     },
+
     PARAMETER {
         @Override
         public WellParameter getInstance(String name) {

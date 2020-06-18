@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class FileHandler {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    private final Path input;
+    protected final Path input;
 
     public FileHandler(Path input) {
         this.input = input;
@@ -22,7 +22,9 @@ public abstract class FileHandler {
     public final <T> List<T> isEmpty(List<T> list) {
         if (list == null || list.size() == 0) {
             return null;
-        } else return list;
+        } else {
+            return list;
+        }
     }
 
     public final boolean isEmpty(String line) {
