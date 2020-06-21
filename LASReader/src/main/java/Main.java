@@ -28,15 +28,15 @@ import java.util.List;
 
 public class Main {
     public static final Logger logger = LoggerFactory.getLogger(Main.class); // Create instance of logger
-    private static ArrayList<Well> wells = new ArrayList<>(); // Create list to store created wells
+    private static List<Well> wells = new ArrayList<>(); // Create list to store created wells
 
     /** Main method
      * @param args path to file or directory
      */
     public static void main(String[] args) {
         // Tests (not to run with parameters)
-        args = new String[1];
-        args[0] = "D:\\utilities\\Java Projects\\data\\test_files_Athy";
+        // args = new String[1];
+        // args[0] = "D:\\utilities\\Java Projects\\data\\test_files_Athy";
 
         if (args.length != 1) {  // Sout info if args.length is illegal
             logger.info("LAS Reader.\nRun with one parameter - path to folder or file");
@@ -56,7 +56,7 @@ public class Main {
         wells.forEach(well -> logger.info(well.toString())); // Log results
     }
 
-    public static ArrayList<Well> getWells() {
+    public static List<Well> getWells() {
         return wells;
     }
 

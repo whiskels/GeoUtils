@@ -11,9 +11,9 @@ import java.util.regex.Pattern;
 public final class LasDataParser {
     private static final Logger logger = LoggerFactory.getLogger(LasDataParser.class); // Create instance of logger
     private final String BLOCK_SEPARATOR = "~", INFO_SEPARATOR = "#"; // Separators are constant
-    private final HashMap<String, WellHeader> headers = new HashMap<>();
-    private final LinkedHashMap<String, WellLog> logs = new LinkedHashMap<>();
-    private final HashMap<String, WellParameter> parameters = new HashMap<>();
+    private final Map<String, WellHeader> headers = new HashMap<>();
+    private final Map<String, WellLog> logs = new LinkedHashMap<>();
+    private final Map<String, WellParameter> parameters = new HashMap<>();
     private LasReader reader;
     private Section currentSection; // Current section of .las file
     private WellObjectType currentType; // Current type of created parameter
@@ -94,7 +94,7 @@ public final class LasDataParser {
     /**
      * Sets current section and type from line that starts with BLOCK_SEPARATOR
      */
-    private final void setCurrentSectionAndType(String line) {
+    private void setCurrentSectionAndType(String line) {
         switch (line.charAt(1)) {
             case 'V':
                 currentSection = Section.V;
@@ -126,7 +126,7 @@ public final class LasDataParser {
     /**
      * General method to add Well parameters from line
      */
-    private final void createParameter(String line) {
+    private  void createParameter(String line) {
         String name = null, unit = null, value = null, desc = null;
         WellParameter parameter = null;
         final Pattern pattern = Pattern.compile("\\.?([^.]*)\\.([^\\s]*)(.*):(.*)");
@@ -185,15 +185,15 @@ public final class LasDataParser {
         }
     }
 
-    public HashMap<String, WellHeader> getHeaders() {
+    public Map<String, WellHeader> getHeaders() {
         return headers;
     }
 
-    public LinkedHashMap<String, WellLog> getLogs() {
+    public Map<String, WellLog> getLogs() {
         return logs;
     }
 
-    public HashMap<String, WellParameter> getParameters() {
+    public Map<String, WellParameter> getParameters() {
         return parameters;
     }
 }

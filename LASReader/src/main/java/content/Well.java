@@ -10,9 +10,9 @@ import java.util.Map;
  */
 
 public final class Well extends WellObject {
-    private HashMap<String, WellHeader> headers;
-    private LinkedHashMap<String, WellLog> logs;
-    private HashMap<String, WellParameter> parameters;
+    private Map<String, WellHeader> headers;
+    private Map<String, WellLog> logs;
+    private Map<String, WellParameter> parameters;
 
     public Well(String name) {
         super(name);
@@ -43,27 +43,27 @@ public final class Well extends WellObject {
                 getName(), headers.keySet(), logs.keySet(), getLogsSize(), parameters.keySet()  );
     }
 
-    public HashMap<String, WellLog> getLogs() {
+    public Map<String, WellLog> getLogs() {
         return logs;
     }
 
-    public HashMap<String, WellHeader> getHeaders() {
+    public Map<String, WellHeader> getHeaders() {
         return headers;
     }
 
-    public HashMap<String, WellParameter> getParameters() {
+    public Map<String, WellParameter> getParameters() {
         return parameters;
     }
 
-    public void addHeaders(HashMap<String, WellHeader> headers) {
+    public void addHeaders(Map<String, WellHeader> headers) {
         this.headers.putAll(headers);
     }
 
-    public void addParameters(HashMap<String, WellParameter> parameters) {
+    public void addParameters(Map<String, WellParameter> parameters) {
         this.parameters.putAll(parameters);
     }
 
-    public void addLogs(LinkedHashMap<String, WellLog> logs) {
+    public void addLogs(Map<String, WellLog> logs) {
         this.logs.putAll(logs);
     }
 }
