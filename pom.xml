@@ -6,14 +6,30 @@
 
     <groupId>com.whiskels</groupId>
     <artifactId>GeoUtils</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-ALPHA</version>
 
-         
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java-version>1.8</java-version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <slf4j.version>1.7.30</slf4j.version>
     </properties>
+
+    <modules>
+        <module>LASReader</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
@@ -25,8 +41,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.30</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>

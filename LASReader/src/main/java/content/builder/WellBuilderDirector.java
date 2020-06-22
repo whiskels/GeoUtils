@@ -1,4 +1,4 @@
-package main.java.content.builder;
+package content.builder;
 
 public class WellBuilderDirector {
     public void createWell(WellBuilder builder) {

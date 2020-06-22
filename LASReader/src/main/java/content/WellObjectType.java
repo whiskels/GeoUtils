@@ -1,4 +1,4 @@
-package main.java.content;
+package content;
 
 /**
  * Well Object Type ENUM

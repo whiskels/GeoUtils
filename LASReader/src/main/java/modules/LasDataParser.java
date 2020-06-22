@@ -1,6 +1,6 @@
-package main.java.modules;
+package modules;
 
-import main.java.content.*;
+import content.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

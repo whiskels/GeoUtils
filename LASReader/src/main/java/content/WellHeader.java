@@ -1,4 +1,4 @@
-package main.java.content;
+package content;
 
 /**
  * Well headers are parsed from the corresponding LAS section

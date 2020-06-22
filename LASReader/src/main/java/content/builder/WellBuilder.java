@@ -1,6 +1,6 @@
-package main.java.content.builder;
+package content.builder;
 
-import main.java.content.Well;
+import content.Well;
 
 /**
  * Well Builder is used to create well objects by various input parameters;

@@ -1,8 +1,9 @@
-package main.java.content.builder;
+package content.builder;
 
-import main.java.content.Well;
-import main.java.modules.LasDataParser;
-import main.java.modules.LasReader;
+import content.Well;
+import modules.LasDataParser;
+import modules.LasReader;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,16 +1,11 @@
-package main.java;
 
-import main.java.content.builder.WellBuilder;
-import main.java.content.builder.WellBuilderDirector;
-import main.java.content.builder.WellBuilderFromLas;
+import content.*;
+import content.builder.*;
+import modules.FileFinder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import main.java.content.Well;
 
-import main.java.modules.FileFinder;
-import main.java.modules.LasReader;
-
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;

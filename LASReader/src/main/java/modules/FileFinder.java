@@ -1,11 +1,8 @@
-package main.java.modules;
+package modules;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**

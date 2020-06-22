@@ -1,8 +1,6 @@
-package main.java.content;
+package content;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Well class
