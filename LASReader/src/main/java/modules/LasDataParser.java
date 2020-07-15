@@ -123,8 +123,9 @@ public final class LasDataParser {
                 currentSection = Section.A;
                 currentType = null;
                 break;
-            default :
+            default:
                 logger.error("Undefined section");
+                break;
         }
     }
 
@@ -132,7 +133,10 @@ public final class LasDataParser {
      * General method to add Well parameters from line
      */
     private void createParameter(String line) {
-        String name = null, unit = null, value = null, desc = null;
+        String name = null;
+        String unit = null;
+        String value = null;
+        String desc = null;
         WellParameter parameter = null;
         final Pattern pattern = Pattern.compile("\\.?([^.]*)\\.([^\\s]*)(.*):(.*)");
         final Matcher matcher = pattern.matcher(line);
@@ -188,6 +192,7 @@ public final class LasDataParser {
                     break;
                 default:
                     logger.error("Undefined parameter");
+                    break;
             }
         }
     }
