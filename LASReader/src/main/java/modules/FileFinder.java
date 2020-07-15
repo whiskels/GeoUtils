@@ -1,8 +1,11 @@
 package modules;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -11,26 +14,33 @@ import java.util.stream.Collectors;
  */
 
 public class FileFinder extends FileHandler {
-    private boolean isValid, isFolder;
+    private boolean isValid;
+    private boolean isFolder;
 
     public FileFinder(String line) {
         super(new File(line).toPath());
         logger.debug("Created fileProcessor\n\tInput string: {}", line);
     }
 
-    /** Check if parameters given in constructor are valid */
+    /**
+     * Check if parameters given in constructor are valid
+     */
     private void checkDataType() {
         isValid = isValid();
         isFolder = isFolder();
         logger.debug("Checking input:\n\t- is valid? {}\n\t- is folder? {}", this.isValid, this.isFolder);
     }
 
-    /** Check if input exists */
+    /**
+     * Check if input exists
+     */
     private boolean isValid() {
         return input != null && Files.exists(input);
     }
 
-    /** Check if input is folder */
+    /**
+     * Check if input is folder
+     */
     private boolean isFolder() {
         if (isValid) {
             return Files.isDirectory(this.getInput());
@@ -58,7 +68,9 @@ public class FileFinder extends FileHandler {
         return isEmpty(foundFiles);
     }
 
-    /** Finds all files in the directory with given file extension */
+    /**
+     * Finds all files in the directory with given file extension
+     */
     private List<Path> findFilesInDirectory(String fileExtension) {
         logger.debug("Searching for files with {}", fileExtension);
 
@@ -68,10 +80,10 @@ public class FileFinder extends FileHandler {
             try {
                 // Recursively find all files with given extension
                 foundFiles = Files.walk(input)
-                                  .filter(s -> containsIgnoreCase(s.toString(), fileExtension))
-                                  .map(Path::toAbsolutePath)
-                                  .sorted()
-                                  .collect(Collectors.toList());
+                        .filter(s -> containsIgnoreCase(s.toString(), fileExtension))
+                        .map(Path::toAbsolutePath)
+                        .sorted()
+                        .collect(Collectors.toList());
             } catch (IOException e) {
                 logger.error("\t{} {}", e, e.getMessage());
             }
@@ -86,9 +98,10 @@ public class FileFinder extends FileHandler {
         return isEmpty(foundFiles);
     }
 
-    /** Checks if one string contains another using regionMatches
+    /**
+     * Checks if one string contains another using regionMatches
      *
-     * @param inputString main string
+     * @param inputString    main string
      * @param containsString string that might be part of inputString
      * @return boolean contains ? true : false
      */

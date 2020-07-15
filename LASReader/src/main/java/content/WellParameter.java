@@ -6,7 +6,9 @@ package content;
  */
 
 public class WellParameter extends WellObject {
-    private String unit, value, description;
+    private String unit;
+    private String value;
+    private String description;
 
     public WellParameter(String name) {
         super(name);
@@ -17,11 +19,17 @@ public class WellParameter extends WellObject {
         return WellObjectType.PARAMETER;
     }
 
-    /** Sets all well parameter fields */
+    /**
+     * Sets all well parameter fields
+     */
     public final void setNonEmptyFields(String unit, String value, String description) {
         setUnit(unit);
         setValue(value);
         setDescription(description);
+    }
+
+    public String getUnit() {
+        return unit;
     }
 
     public final void setUnit(String unit) {
@@ -30,27 +38,23 @@ public class WellParameter extends WellObject {
         }
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public final void setDescription(String description) {
         if (description != null && description.length() != 0) {
             this.description = description;
         }
     }
 
+    public String getValue() {
+        return value;
+    }
+
     public final void setValue(String value) {
         if (value != null && value.length() != 0) {
             this.value = value;
         }
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getValue() {
-        return value;
     }
 }

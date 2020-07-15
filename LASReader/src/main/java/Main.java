@@ -1,6 +1,8 @@
 
-import content.*;
-import content.builder.*;
+import content.Well;
+import content.builder.WellBuilder;
+import content.builder.WellBuilderDirector;
+import content.builder.WellBuilderFromLas;
 import modules.FileFinder;
 
 import org.slf4j.Logger;
@@ -15,8 +17,6 @@ import java.util.List;
  * Finds well log (.las) files in given path
  * Parses found files
  * Creates well objects with the results of parsing
- *
- * @args path to file or directory
  *
  * @author whiskels
  */

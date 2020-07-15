@@ -14,7 +14,6 @@ public final class LasReader extends FileHandler {
     private BufferedReader bf;
     private LasDataParser parser;
     private String wellName;
-    private boolean isRead;
 
     public LasReader(Path input) throws IOException {
         super(input);
@@ -33,7 +32,6 @@ public final class LasReader extends FileHandler {
             parser.parseLine(bf.readLine());
         }
 
-        isRead = true;
         bf.close();
     }
 

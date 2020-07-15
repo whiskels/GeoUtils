@@ -10,7 +10,8 @@ import java.util.regex.Pattern;
 
 public final class LasDataParser {
     private static final Logger logger = LoggerFactory.getLogger(LasDataParser.class); // Create instance of logger
-    private final String BLOCK_SEPARATOR = "~", INFO_SEPARATOR = "#"; // Separators are constant
+    private final String BLOCK_SEPARATOR = "~";
+    private final String INFO_SEPARATOR = "#"; // Separators are constant
     private final Map<String, WellHeader> headers = new HashMap<>();
     private final Map<String, WellLog> logs = new LinkedHashMap<>();
     private final Map<String, WellParameter> parameters = new HashMap<>();
@@ -19,8 +20,7 @@ public final class LasDataParser {
     private WellObjectType currentType; // Current type of created parameter
     private int currentLine; // Current file line
     private String lasVersion;
-    private boolean isWrapped; // Is values section wrapped
-    private enum Section {V, W, C, A, P, O} // .las file sections as enum
+    // private boolean isWrapped; // Is values section wrapped
 
     public LasDataParser(LasReader reader) {
         this.reader = reader;
@@ -29,9 +29,10 @@ public final class LasDataParser {
     /**
      * Parse line
      *
-     * @param line from LasReader
+     * @param string from LasReader
      */
-    public final void parseLine(String line) {
+    public final void parseLine(String string) {
+        String line = string;
         currentLine++;
 
         if (line.startsWith(BLOCK_SEPARATOR)) { // If line is another block
@@ -44,14 +45,15 @@ public final class LasDataParser {
                     final int pointIndex = line.indexOf(".");
                     final int colonIndex = line.indexOf(":");
                     final String value = line.substring(pointIndex, colonIndex)
-                                             .replaceAll("\\s+", "");
+                            .replaceAll("\\s+", "");
 
                     if (line.startsWith("VERS")) {
                         lasVersion = value;
                         logger.debug("\tLAS Version: {}", lasVersion);
-                    } else if (line.startsWith("WRAP") && value.equals("YES")) {
-                        isWrapped = true;
                     }
+                    /* else if (line.startsWith("WRAP") && value.equals("YES")) {
+                        isWrapped = true;
+                    } */
                     break;
                 case W: // WELL - drop through
                 case C: // CURVE - drop through
@@ -78,7 +80,7 @@ public final class LasDataParser {
                             }
                         } catch (Exception e) {
                             logger.error("\t{} while trying to parse line {}\n\tline is: {}\n\t{}",
-                                          e, currentLine, line, e.getMessage());
+                                    e, currentLine, line, e.getMessage());
                             break;
                         }
                     }
@@ -86,6 +88,7 @@ public final class LasDataParser {
                     addLogValues(values);
                     break;
                 case O:
+                default:
                     break;
             }
         }
@@ -120,13 +123,15 @@ public final class LasDataParser {
                 currentSection = Section.A;
                 currentType = null;
                 break;
+            default :
+                logger.error("Undefined section");
         }
     }
 
     /**
      * General method to add Well parameters from line
      */
-    private  void createParameter(String line) {
+    private void createParameter(String line) {
         String name = null, unit = null, value = null, desc = null;
         WellParameter parameter = null;
         final Pattern pattern = Pattern.compile("\\.?([^.]*)\\.([^\\s]*)(.*):(.*)");
@@ -151,12 +156,12 @@ public final class LasDataParser {
      * Adds log values
      *
      * @param values List of log values. Size of list must be equal to the size of map
-     * */
+     */
     public final void addLogValues(List<String> values) {
         if (values.size() == logs.size()) {
             int i = 0;
             for (Map.Entry<String, WellLog> entry : logs.entrySet()) {
-                entry.getValue().addValue(values.get(0),values.get(i));
+                entry.getValue().addValue(values.get(0), values.get(i));
                 i++;
             }
         }
@@ -166,7 +171,7 @@ public final class LasDataParser {
      * Adds well parameter
      *
      * @param object well parameter
-     * @param <T> generic type - object must extend WellObject class
+     * @param <T>    generic type - object must extend WellObject class
      */
     public final <T extends WellObject> void addParameter(T object) {
         if (object != null) {
@@ -181,6 +186,8 @@ public final class LasDataParser {
                 case HEADER:
                     headers.put(object.getName(), (WellHeader) object);
                     break;
+                default:
+                    logger.error("Undefined parameter");
             }
         }
     }
@@ -196,4 +203,6 @@ public final class LasDataParser {
     public Map<String, WellParameter> getParameters() {
         return parameters;
     }
+
+    private enum Section {V, W, C, A, P, O} // .las file sections as enum
 }

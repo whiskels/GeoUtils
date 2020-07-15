@@ -14,7 +14,6 @@ public class WellBuilderFromLas implements WellBuilder {
     private static final Logger logger = LoggerFactory.getLogger(WellBuilderFromLas.class); // Create instance of logger
     private final Path input;
     private Well well;
-    private LasReader reader;
     private LasDataParser parser;
 
     public WellBuilderFromLas(Path input) {
@@ -24,7 +23,7 @@ public class WellBuilderFromLas implements WellBuilder {
     @Override
     public void reset() {
         try {
-            reader = new LasReader(input);
+            LasReader reader = new LasReader(input);
             reader.readFile();
             well = new Well(reader.getWellName());
             parser = reader.getParser();
